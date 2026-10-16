@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --name=ComandarServer --icon=app_icon.ico --clean --noconfirm --hidden-import=PySide6.QtCore --hidden-import=PySide6.QtWidgets --hidden-import=PySide6.QtGui --hidden-import=requests --hidden-import=win32api --hidden-import=win32print --hidden-import=win32con --add-data "app_state.json;." --add-data "comandar_server/bin;bin" app.py

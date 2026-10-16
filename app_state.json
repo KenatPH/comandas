@@ -1,0 +1,55 @@
+{
+  "pin": "41038",
+  "printers": [
+    "XPRINTER 80C USB",
+    "Impresora LAN",
+    "Impresora Virtual (Simulador)"
+  ],
+  "assignments": {
+    "XPRINTER 80C USB": {
+      "codigo": "000002",
+      "estatus": "0",
+      "grupos_asociados": "313;315",
+      "id_agencia": null,
+      "id_comanda": "6",
+      "nombre": "COCINA",
+      "nombre_agencia": null
+    },
+    "Impresora LAN": {
+      "codigo": "000001",
+      "estatus": "0",
+      "grupos_asociados": "314",
+      "id_agencia": null,
+      "id_comanda": "5",
+      "nombre": "BEBIDAS",
+      "nombre_agencia": null
+    },
+    "Impresora Virtual (Simulador)": {
+      "codigo": "000002",
+      "estatus": "0",
+      "grupos_asociados": "313;315",
+      "id_agencia": null,
+      "id_comanda": "6",
+      "nombre": "COCINA",
+      "nombre_agencia": null
+    }
+  },
+  "assignments_by_comanda": {
+    "7": "Impresora Virtual (Simulador)",
+    "6": "Impresora Virtual (Simulador)",
+    "5": "Impresora Virtual (Simulador)"
+  },
+  "last_id_operti": "42440",
+  "agencia": {
+    "id_agencia": "1",
+    "nombre": "AGENCIA PRINCIPAL"
+  },
+  "api_server": "adm",
+  "show_virtual_printer": true,
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8443,
+    "tls_cert": "",
+    "tls_key": ""
+  }
+}

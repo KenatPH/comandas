@@ -1,0 +1,11 @@
+.venv
+build
+venv/
+__pycache__/
+.env
+logs/
+*.log
+.pytest_cache/
+comandas_impresas/
+dist/
+*.zip
