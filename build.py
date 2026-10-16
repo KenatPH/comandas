@@ -7,6 +7,12 @@ import sys
 import subprocess
 import shutil
 
+# Forzar codificación UTF-8 en stdout y stderr (evita UnicodeEncodeError en Windows con emojis)
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 def main():
     print("🚀 Creando ejecutable Comandar Server...")
     
