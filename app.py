@@ -50,7 +50,7 @@ CLOUDFLARE_HEALTH_CHECK_INTERVAL = 60  # Intervalo en segundos para comprobar la
 CLOUDFLARE_HEALTH_CHECK_TIMEOUT = 10   # Tiempo de espera en segundos para la respuesta de /healthz
 
 SERVERS = {
-    # "local":     {"label": "Local",                 "base_url": "http://adminbiz.local"},
+    "local":     {"label": "Local",                 "base_url": "http://adminbiz.local"},
     "adm":       {"label": "ADM (Varios países)",   "base_url": "https://adm.premium-soft.com"},
     "coladm":    {"label": "COLADM (Colombia)",     "base_url": "https://coladm.premium-soft.com/ADMCOL"},
     "coladm_qa": {"label": "COLADM QA (Colombia)",  "base_url": "https://coladm.premium-soft.com/QA_admincol"},
@@ -2231,7 +2231,8 @@ class MainWindow(QMainWindow):
             # Datos a enviar al API
             data = {
                 "pin": str(pin),
-                "url": str(url)
+                "url": str(url),
+                "tipo": "impresion"
             }
             
             if id_agencia:
