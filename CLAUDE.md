@@ -44,7 +44,7 @@ The entire application lives in a single file: `app.py`. It is a Windows desktop
 3. Falls back to `win32api.ShellExecute("print")` / `os.startfile("print")`.
 4. Cleans up the temp file after a short delay.
 
-**Printer discovery** — Uses `win32print.EnumPrinters(PRINTER_ENUM_LOCAL)` (pywin32) or PowerShell `Get-Printer` as fallback. Printers containing UNC paths, IP addresses, or suspicious patterns are filtered out by `_is_safe_printer()`.
+**Printer discovery** — Uses `win32print.EnumPrinters(PRINTER_ENUM_LOCAL)` (pywin32) or PowerShell `Get-Printer` as fallback (strictly local printers). Printers containing UNC paths, IP addresses, or suspicious patterns are filtered out by `_is_safe_printer()`. Preserves all installed local printers even if they share the same name.
 
 **Remote API calls** — `ComandasFetcher` and `AgenciasFetcher` (QObject workers) hit:
 - `https://adm.premium-soft.com/Comandas/ConsultarLote?pin=<PIN>`

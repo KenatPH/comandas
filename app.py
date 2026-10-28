@@ -41,7 +41,7 @@ except Exception:
 # ==============================
 # Configuración de la aplicación
 # ==============================
-APP_VERSION = "2.0.4"
+APP_VERSION = "2.0.6"
 APP_STATE_FILE = "app_state.json"
 DEBUG_LOG_FILE = os.path.join(os.getcwd(), "print_debug.log")
 
@@ -200,7 +200,7 @@ def get_base_url(state: dict) -> str:
 # ==============================
 # Descubrir impresoras (Windows / Linux)
 def _discover_printers_powershell() -> List[str]:
-    """Usa PowerShell para listar impresoras si no hay pywin32."""
+    """Usa PowerShell para listar impresoras si no hay pywin32 (solo impresoras locales)."""
     try:
         # PowerShell command para obtener solo impresoras locales
         cmd = [
@@ -213,14 +213,7 @@ def _discover_printers_powershell() -> List[str]:
         _log_debug(f"PowerShell Get-Printer (local) rc={res.returncode} stdout_len={len(res.stdout)} stderr_len={len(res.stderr)}")
         if res.returncode == 0 and res.stdout:
             names = [line.strip() for line in res.stdout.splitlines() if line.strip()]
-            # Únicos, preservando orden
-            seen: set[str] = set()
-            out: List[str] = []
-            for n in names:
-                if n not in seen:
-                    seen.add(n)
-                    out.append(n)
-            return out
+            return names
     except Exception:
         pass
     return []
@@ -252,10 +245,11 @@ def _discover_printers_linux() -> List[str]:
 
 def discover_printers() -> List[str]:
     """
-    Intenta obtener la lista de impresoras.
-    En Windows: pywin32 -> PowerShell.
+    Intenta obtener la lista de impresoras locales.
+    En Windows: pywin32 -> PowerShell (solo impresoras locales).
     En Linux: lpstat.
     Filtra impresoras remotas problemáticas.
+    Preserva impresoras con el mismo nombre si existen múltiples en el sistema.
     """
     printers = []
     if sys.platform == "win32":
@@ -272,19 +266,16 @@ def discover_printers() -> List[str]:
     else:
         printers = _discover_printers_linux()
 
-    seen = set()
     out = []
     
     # Agregar la impresora virtual/simulador para pruebas/desarrollo local si está habilitado
     if load_state().get("show_virtual_printer", False):
         virtual_name = "Impresora Virtual (Simulador)"
         out.append(virtual_name)
-        seen.add(virtual_name)
     
     for name in printers:
-        if name and name not in seen:
+        if name:
             if _is_safe_printer(name):
-                seen.add(name)
                 out.append(name)
             else:
                 _log_debug(f"Impresora filtrada (remota/insegura): {name}")
@@ -458,7 +449,7 @@ def _list_printers() -> list[str]:
     """Mantengo esta función para compatibilidad interna (pywin32 si existe)."""
     if not win32print:
         return _discover_printers_powershell()
-    flags = win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS
+    flags = win32print.PRINTER_ENUM_LOCAL
     return [p[2] for p in win32print.EnumPrinters(flags)]
 
 
@@ -2554,7 +2545,9 @@ class MainWindow(QMainWindow):
             _log_exception("Error verificando impresoras problemáticas", e)
 
     def add_printer_to_list(self, printer_name: str):
-        if printer_name in self.state["printers"]:
+        discovered_count = discover_printers().count(printer_name)
+        current_count = self.state["printers"].count(printer_name)
+        if current_count >= discovered_count and discovered_count > 0:
             QMessageBox.information(self, "Ya existe", f"La impresora \"{printer_name}\" ya está en la lista.")
             self.tabs.setCurrentWidget(self.tab_list)
             return
